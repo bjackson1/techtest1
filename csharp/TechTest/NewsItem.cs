@@ -14,15 +14,18 @@
 
         public bool Search(string[] terms, MatchType matchType)
         {
-            MatchType matchResult = this.DetermineMatchType(terms);
-            switch (matchType)
+            int count = 0;
+
+            foreach (string term in terms)
             {
-                case MatchType.And:
-                    return matchResult.Equals(matchType);
-                case MatchType.Or:
-                    return matchResult.Equals(matchType) || matchResult.Equals(MatchType.And);
+                if (this.rawItem.Contains(term))
+                {
+                    count++;
+                }
             }
 
+            if (matchType.Equals(MatchType.And) && count.Equals(terms.Length)) return true;
+            if (matchType.Equals(MatchType.Or) && ((count > 0) && (count <= terms.Length))) return true;
             return false;
         }
 
@@ -59,23 +62,6 @@
             }
 
             return foundItemsIndexes.ToArray();
-        }
-
-        private MatchType DetermineMatchType(string[] terms)
-        {
-            int count = 0;
-
-            foreach(string term in terms)
-            {
-                if (this.rawItem.Contains(term))
-                {
-                    count++;
-                }
-            }
-
-            if (count.Equals(0)) return MatchType.Not;
-            if (count.Equals(terms.Length)) return MatchType.And;
-            return MatchType.Or;
         }
     }
 }

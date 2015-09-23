@@ -6,9 +6,9 @@
     [ExcludeFromCodeCoverage]
     public class Program
     {
-        private const string helpText = "Usage:\n   TechTest.exe NewsFilePath SearchType SearchTerm1 SearchTerm2 ...\n\n"
+        private const string HELP_TEXT = "Usage:\n   TechTest.exe NewsFilePath SearchType SearchTerm1 SearchTerm2 ...\n\n"
             + "Where:\n"
-            + "   NewsFilePath: File path of source news items"
+            + "   NewsFilePath: File path of source news items\n"
             + "   SearchType(s): AND OR\n"
             + "   SearchTerm(s): Any number of individual words to search on\n\n"
             + "Example:\n"
@@ -21,35 +21,13 @@
             try
             {
                 UserInput userInput = new UserInput(args);
-                NewsItem[] newsItems = null;
-                int[] itemIndexes = null;
-
-                try
-                {
-                    newsItems = NewsItem.LoadItemsFromFile(userInput.FilePath);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("An error occured loading news articles: {0}", ex.Message);
-                }
-
-                if (newsItems != null)
-                {
-                    itemIndexes = NewsItem.FindNewsArticlesContaining(newsItems, userInput.Terms, userInput.MatchType);
-                }
-
-                if (itemIndexes != null)
-                {
-                    Console.WriteLine("Found articles: {0}", string.Join(",", itemIndexes));
-                }
-                else
-                {
-                    Console.WriteLine("Unable to process articles.");
-                }
+                NewsItem[] newsItems = NewsItem.LoadItemsFromFile(userInput.FilePath);
+                int[] itemIndexes = NewsItem.FindNewsArticlesContaining(newsItems, userInput.Terms, userInput.MatchType);
+                Console.WriteLine("Found {0} articles: {1}", itemIndexes.Length, string.Join(",", itemIndexes));
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{0}\n\n{1}", ex.Message, helpText);
+                Console.WriteLine("{0}\n\n{1}", ex.Message, HELP_TEXT);
             }
         }
     }

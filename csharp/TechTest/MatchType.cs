@@ -9,7 +9,6 @@ namespace TechTest
     public enum MatchType
     {
         And,
-        Or,
-        Not
+        Or
     }
 }

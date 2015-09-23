@@ -13,7 +13,7 @@
         private const string NEGATIVE_TEST_NEWS_FILE_PATH = "NegativeTestNewsItems.txt";
 
         [TestMethod]
-        public void TestLoadFromFile()
+        public void TestLoadNewsItems_WillLoadAllItemsFromFileWithIncompleteLinesAndMultipleCharacterSets_WhenCalled()
         {
             try
             {
@@ -28,7 +28,7 @@
         }
 
         [TestMethod]
-        public void TestLoadFromStringArray()
+        public void TestLoadNewsItems_WillInstantiateAllNewsInstancesFromStringArrayWithIncompleteLinesAndMultipleCharacterSets_WhenCalled()
         {
             string[] rawItems = File.ReadAllLines(NEGATIVE_TEST_NEWS_FILE_PATH);
 
@@ -44,7 +44,39 @@
         }
 
         [TestMethod]
-        public void TestSearchWithMultipleOrMatches1()
+        public void TestSearch_WillReturnTrue_WhenCalledWithMatchingAndSearch()
+        {
+            NewsItem newsItem = new NewsItem("July 9 , 2013 : The HSCIC has extended the consultation period on a draft list of conditions to be included in a proposed ' Present on Admission flag ' . There are a number of conditions that , whilst preventable , can be acquired in hospitals and have an adverse effect on a patients morbidity and / or involve substantial financial cost to the hospital . Analysis of these conditions is currently difficult as it is not always known whether a condition has been acquired during the patients stay or was present at the time of admission to the hospital . If introduced a Present on admission flag could enable identification of conditions that were acquired by patients during their stay and those that existed prior to admission . This would enable better analysis of these conditions , helping to attribute the condition to the appropriate timeframe and in turn identify good practice . The Health and Social Care Information Centre ( HSCIC ) is working with key stakeholders , including the Academy of Medical Royal Colleges ( AoMRC ) , Royal College of Nursing ( RCN ) and Care Quality Commission ( CQC ) to define a candidate list of Present on Admission conditions and associated guidance . We are keen to hear from stakeholders , particularly clinicians and healthcare specialists . The consultation has now been extended until Sunday 28 July to enable as wide a range of stakeholders to respond as possible . ");
+            bool found = newsItem.Search(new string[] { "Care", "Quality", "Commission" }, MatchType.And);
+            Assert.IsTrue(found);
+        }
+
+        [TestMethod]
+        public void TestSearch_WillReturnTrue_WhenCalledWithMatchingOrSearch()
+        {
+            NewsItem newsItem = new NewsItem("July 9 , 2013 : The HSCIC has extended the consultation period on a draft list of conditions to be included in a proposed ' Present on Admission flag ' . There are a number of conditions that , whilst preventable , can be acquired in hospitals and have an adverse effect on a patients morbidity and / or involve substantial financial cost to the hospital . Analysis of these conditions is currently difficult as it is not always known whether a condition has been acquired during the patients stay or was present at the time of admission to the hospital . If introduced a Present on admission flag could enable identification of conditions that were acquired by patients during their stay and those that existed prior to admission . This would enable better analysis of these conditions , helping to attribute the condition to the appropriate timeframe and in turn identify good practice . The Health and Social Care Information Centre ( HSCIC ) is working with key stakeholders , including the Academy of Medical Royal Colleges ( AoMRC ) , Royal College of Nursing ( RCN ) and Care Quality Commission ( CQC ) to define a candidate list of Present on Admission conditions and associated guidance . We are keen to hear from stakeholders , particularly clinicians and healthcare specialists . The consultation has now been extended until Sunday 28 July to enable as wide a range of stakeholders to respond as possible . ");
+            bool found = newsItem.Search(new string[] { "list", "wibble", "foo" }, MatchType.Or);
+            Assert.IsTrue(found);
+        }
+
+        [TestMethod]
+        public void TestSearch_WillReturnFalse_WhenCalledWithNotMatchingAndSearch()
+        {
+            NewsItem newsItem = new NewsItem("July 9 , 2013 : The HSCIC has extended the consultation period on a draft list of conditions to be included in a proposed ' Present on Admission flag ' . There are a number of conditions that , whilst preventable , can be acquired in hospitals and have an adverse effect on a patients morbidity and / or involve substantial financial cost to the hospital . Analysis of these conditions is currently difficult as it is not always known whether a condition has been acquired during the patients stay or was present at the time of admission to the hospital . If introduced a Present on admission flag could enable identification of conditions that were acquired by patients during their stay and those that existed prior to admission . This would enable better analysis of these conditions , helping to attribute the condition to the appropriate timeframe and in turn identify good practice . The Health and Social Care Information Centre ( HSCIC ) is working with key stakeholders , including the Academy of Medical Royal Colleges ( AoMRC ) , Royal College of Nursing ( RCN ) and Care Quality Commission ( CQC ) to define a candidate list of Present on Admission conditions and associated guidance . We are keen to hear from stakeholders , particularly clinicians and healthcare specialists . The consultation has now been extended until Sunday 28 July to enable as wide a range of stakeholders to respond as possible . ");
+            bool found = newsItem.Search(new string[] { "Care", "Quality", "wibble" }, MatchType.And);
+            Assert.IsFalse(found);
+        }
+
+        [TestMethod]
+        public void TestSearch_WillReturnFalse_WhenCalledWithNotMatchingorSearch()
+        {
+            NewsItem newsItem = new NewsItem("July 9 , 2013 : The HSCIC has extended the consultation period on a draft list of conditions to be included in a proposed ' Present on Admission flag ' . There are a number of conditions that , whilst preventable , can be acquired in hospitals and have an adverse effect on a patients morbidity and / or involve substantial financial cost to the hospital . Analysis of these conditions is currently difficult as it is not always known whether a condition has been acquired during the patients stay or was present at the time of admission to the hospital . If introduced a Present on admission flag could enable identification of conditions that were acquired by patients during their stay and those that existed prior to admission . This would enable better analysis of these conditions , helping to attribute the condition to the appropriate timeframe and in turn identify good practice . The Health and Social Care Information Centre ( HSCIC ) is working with key stakeholders , including the Academy of Medical Royal Colleges ( AoMRC ) , Royal College of Nursing ( RCN ) and Care Quality Commission ( CQC ) to define a candidate list of Present on Admission conditions and associated guidance . We are keen to hear from stakeholders , particularly clinicians and healthcare specialists . The consultation has now been extended until Sunday 28 July to enable as wide a range of stakeholders to respond as possible . ");
+            bool found = newsItem.Search(new string[] { "elephant", "foo", "wibble" }, MatchType.And);
+            Assert.IsFalse(found);
+        }
+
+        [TestMethod]
+        public void TestFindNewsArticlesContaining_WillFindSevenMatches_WhenCalledWithMutipleOrTerms()
         {
             NewsItem[] newsItems = NewsItemTest.LoadNewsItems(POSITIVE_TEST_NEWS_FILE_PATH);
 
@@ -54,7 +86,7 @@
         }
 
         [TestMethod]
-        public void TestSearchWithMultipleOrMatches2()
+        public void TestFindNewsArticlesContaining_WillFindTwoMatches_WhenCalledWithMultipleOrTerms()
         {
             NewsItem[] newsItems = NewsItemTest.LoadNewsItems(POSITIVE_TEST_NEWS_FILE_PATH);
 
@@ -64,7 +96,7 @@
         }
 
         [TestMethod]
-        public void TestSearchWithSingleOrMatches1()
+        public void TestFindNewsArticlesContaining_WillFindOneMatch_WhenCalledWithMultipleOrTerms()
         {
             NewsItem[] newsItems = NewsItemTest.LoadNewsItems(POSITIVE_TEST_NEWS_FILE_PATH);
 
@@ -74,7 +106,7 @@
         }
 
         [TestMethod]
-        public void TestSearchWithSingleAndMatches1()
+        public void TestFindNewsArticlesContaining_WillFindOneMatch_WhenCalledWithMultipleAndTerms1()
         {
             NewsItem[] newsItems = NewsItemTest.LoadNewsItems(POSITIVE_TEST_NEWS_FILE_PATH);
 
@@ -84,7 +116,7 @@
         }
 
         [TestMethod]
-        public void TestSearchWithSingleAndMatches2()
+        public void TestFindNewsArticlesContaining_WillFindOneMatch_WhenCalledWithMultipleAndTerms2()
         {
             NewsItem[] newsItems = NewsItemTest.LoadNewsItems(POSITIVE_TEST_NEWS_FILE_PATH);
 
@@ -94,21 +126,11 @@
         }
 
         [TestMethod]
-        public void TestSearchWithNoAndMatches1()
+        public void TestFindNewsArticlesContaining_WillFindNoMatches_WhenCalledWithSingleObscureAndTerm()
         {
             NewsItem[] newsItems = NewsItemTest.LoadNewsItems(POSITIVE_TEST_NEWS_FILE_PATH);
 
             int[] itemIndexes = NewsItem.FindNewsArticlesContaining(newsItems, new string[] { "wibble" }, MatchType.And);
-
-            Assert.AreEqual(0, itemIndexes.Length);
-        }
-
-        [TestMethod]
-        public void TestSearchWithNotMatch()
-        {
-            NewsItem[] newsItems = NewsItemTest.LoadNewsItems(POSITIVE_TEST_NEWS_FILE_PATH);
-
-            int[] itemIndexes = NewsItem.FindNewsArticlesContaining(newsItems, new string[] { "wibble123" }, MatchType.Not);
 
             Assert.AreEqual(0, itemIndexes.Length);
         }

@@ -13,7 +13,7 @@
         private const string NEGATIVE_TEST_NEWS_FILE_PATH = "NegativeTestNewsItems.txt";
 
         [TestMethod]
-        public void TestFilePath1()
+        public void TestFilePath_WillSetFilePathProperty_WhenCalled()
         {
             try
             {
@@ -27,61 +27,54 @@
         }
 
         [TestMethod]
-        public void TestFilePathNegative1()
+        public void TestFilePath_WillThrowFileNotFoundException_WhenCalledWithNonExistantFilePath()
         {
             try
             {
                 UserInput userInput = new UserInput(new string[] { "filethatdoesnotexist.txt", "AND", "Care" });
-                Assert.Fail();
+                Assert.Fail("Expected {0} to be thrown.", typeof(FileNotFoundException));
             }
             catch (Exception ex)
             {
-                Assert.AreEqual(ex.GetType(), typeof(FileNotFoundException));
+                Assert.AreEqual(typeof(FileNotFoundException), ex.GetType());
             }
         }
 
         [TestMethod]
-        public void TestMatchTypeParse1()
+        public void TestMatchType_WillSetMatchTypeToAnd_WhenCalledWithAndParameterInUppercase()
         {
             UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "AND", "Care" });
             Assert.AreEqual(MatchType.And, userInput.MatchType);
         }
 
         [TestMethod]
-        public void TestMatchTypeParse2()
+        public void TestMatchType_WillSetMatchTypeToAnd_WhenCalledWithAndParameterInLowercase()
         {
             UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "and", "Care" });
             Assert.AreEqual(MatchType.And, userInput.MatchType);
         }
 
         [TestMethod]
-        public void TestMatchTypeParse3()
+        public void TestMatchType_WillSetMatchTypeToAnd_WhenCalledWithAndParameterInMixedCase()
         {
             UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "anD", "Care" });
             Assert.AreEqual(MatchType.And, userInput.MatchType);
         }
 
         [TestMethod]
-        public void TestMatchTypeParse4()
+        public void TestMatchType_WillSetMatchTypeToOr_WhenCalledWithOrParameter()
         {
             UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "or", "Care" });
             Assert.AreEqual(MatchType.Or, userInput.MatchType);
         }
 
         [TestMethod]
-        public void TestMatchTypeParse5()
-        {
-            UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "not", "Care" });
-            Assert.AreEqual(MatchType.Not, userInput.MatchType);
-        }
-
-        [TestMethod]
-        public void TestMatchTypeParseNegative1()
+        public void TestMatchType_WillThrowArgumentException_WhenCalledWithInvalidMatchTypeParameter()
         {
             try
             {
                 UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "aaa", "Care" });
-                Assert.Fail();
+                Assert.Fail("Expected {0} to be thrown.", typeof(ArgumentException));
             }
             catch (Exception ex)
             {
@@ -90,18 +83,18 @@
         }
 
         [TestMethod]
-        public void TestSearchTermParse1()
+        public void TestSearchTerm_WillSetSingleSearchTerm_WhenCalledWithSingleSearchTerm()
         {
-            UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "not", "Care" });
+            UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "and", "Care" });
             Assert.AreEqual("Care", string.Join(",", userInput.Terms));
         }
 
         [TestMethod]
-        public void TestSearchTermParseNegative1()
+        public void TestSearchTerm_WillTrowArgumentException_WhenCalledWithTwoArguments()
         {
             try
             {
-                UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "not" });
+                UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "and" });
                 Assert.Fail();
             }
             catch (Exception ex)
@@ -111,9 +104,9 @@
         }
 
         [TestMethod]
-        public void TestSearchTermParse2()
+        public void TestSearchTerm_WillSetThreeSearchTerms_WhenCalledWithFiveValidArguments()
         {
-            UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "not", "Care", "Quality", "Commission" });
+            UserInput userInput = new UserInput(new string[] { POSITIVE_TEST_NEWS_FILE_PATH, "and", "Care", "Quality", "Commission" });
             Assert.AreEqual("Care,Quality,Commission", string.Join(",", userInput.Terms));
         }
     }
